@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Questao4;
+package Questao7;
 
 /**
  *
@@ -25,16 +25,10 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
     private GL gl;
     private GLU glu;
     private GLAutoDrawable glDrawable;
-    private double ax = 0.0;
-    private double ay = 0.0;
-    private double bx = 70.71067811865476;
-    private double by = 70.71067811865476;
-    private double angle = 45.0;
-    private double thunder = 100.0;
-    private double extraX = 0.0;
-    private double extraY = 0.0;
-    private double oax, oay, obx, oby = 0.0;
-    private double rax, ray, rbx, rby = 0.0;
+    private Ponto4D p0 = new Ponto4D(100.0, 100.0, 0.0, 0.0);
+    private Ponto4D pivo = new Ponto4D(0.0, 0.0, 0.0, 0.0);
+    private Ponto4D spoint = new Ponto4D(0.0, 0.0, 0.0, 0.0);
+    private double qtdPontos = 10.0;
 
     public void init(GLAutoDrawable drawable) {
         System.out.println(" --- init ---");
@@ -56,81 +50,38 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
 
         SRU();
 
-        // seu desenho ...
+        // circulo grande
         gl.glColor3f(0.0f, 0.0f, 0.0f);
-        gl.glLineWidth(3.0f);
-        gl.glPointSize(5.0f);//mudar tamanho ponto
-        gl.glBegin(GL.GL_LINES);
-        gl.glVertex2d(ax, ay);
-        gl.glVertex2d(bx, by);
-        //System.out.println("bx="+bx+"by="+by);
+        gl.glLineWidth(2.0f);
+        gl.glBegin(GL.GL_LINE_LOOP);
+        for (int x = 0; x < 360; x++) {
+            gl.glVertex2d(RetornaX(x, 100.0) + 100, RetornaY(x, 100.0) + 100);
+        }
         gl.glEnd();
+        // ponto
+        gl.glColor3f(1.0f, 0.0f, 0.0f);
+        gl.glPointSize(7.0f);
         gl.glBegin(GL.GL_POINTS);
-        gl.glVertex2d(ax, ay);
-        gl.glVertex2d(bx, by);
+        gl.glVertex2d(p0.obterX(), p0.obterY());
         gl.glEnd();
-
+        // circulo pequeno
+        gl.glColor3f(0.0f, 0.0f, 0.0f);
+        gl.glLineWidth(2.0f);
+        gl.glBegin(GL.GL_LINE_LOOP);
+        for (int x = 0; x < 360; x++) {
+            gl.glVertex2d(RetornaX(x, 10.0)+100, RetornaY(x, 10.0) + 100);
+        }
+        gl.glEnd();
         gl.glFlush();
     }
 
     public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
-            case KeyEvent.VK_Q:
-                extraX = extraX - 10.0;
-                ax = ax - 10.0;
-                bx = bx - 10.0;
+            case KeyEvent.VK_1:
+
                 glDrawable.display();
                 break;
-            case KeyEvent.VK_W:
-                extraX = extraX + 10.0;
-                ax = ax + 10.0;
-                bx = bx + 10.0;
-                glDrawable.display();
-                break;
-            case KeyEvent.VK_E:
-                extraY = extraY - 10.0;
-                ay = ay - 10.0;
-                by = by - 10.0;
-                glDrawable.display();
-                break;
-            case KeyEvent.VK_R:
-                extraY = extraY + 10.0;
-                ay = ay + 10.0;
-                by = by + 10.0;
-                glDrawable.display();
-                break;
-            case KeyEvent.VK_A:
-                if (thunder > 10) {
-                    thunder = thunder - 10.0;
-                }
-                bx = RetornaX(angle, thunder) + extraX;
-                by = RetornaY(angle, thunder) + extraY;
-                glDrawable.display();
-                break;
-            case KeyEvent.VK_S:
-                thunder = thunder + 10.0;
-                bx = RetornaX(angle, thunder) + extraX;
-                by = RetornaY(angle, thunder) + extraY;
-                glDrawable.display();
-                break;
-            case KeyEvent.VK_Z:
-                angle = angle + 5.0;
-                if (angle == 360.0) {
-                    angle = 0.0;
-                }
-                bx = RetornaX(angle, thunder) + extraX;
-                by = RetornaY(angle, thunder) + extraY;
-                glDrawable.display();
-                break;
-            case KeyEvent.VK_X:
-                angle = angle - 5.0;
-                if (angle == 0.0) {
-                    angle = 360.0;
-                }
-                bx = RetornaX(angle, thunder) + extraX;
-                by = RetornaY(angle, thunder) + extraY;
-                glDrawable.display();
-                break;
+
         }
     }
 
@@ -141,25 +92,16 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
     }
 
     public void mousePressed(MouseEvent e) {
-//	    if ((e.getModifiers() & e.BUTTON1_MASK) != 0) {
-        // System.out.println(" --- mousePressed ---");
-        obx = e.getX();
-        oby = e.getY();
-        oax = e.getX();
-        oay = e.getY();
-        rbx = bx;
-        rby = by;
-        rax = ax;
-        ray = ay;
-//	    }
+//        System.out.println("x=" + e.getX() + "y=" + e.getY());
+//        System.out.println("x=" + e.getXOnScreen() + "y=" + e.getYOnScreen());
+        pivo.atribuirX(e.getX());
+        pivo.atribuirY(e.getY());
+        //antigoX = e.getX();
+        //antigoY = e.getY();
     }
 
     public void mouseReleased(MouseEvent e) {
-        bx = rbx;
-        by = rby;
-        ax = rax;
-        ay = ray;
-        glDrawable.display();
+
     }
 
     public void mouseClicked(MouseEvent e) {
@@ -167,23 +109,14 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
 
     public void mouseDragged(MouseEvent e) {
         System.out.println(" --- mouseDragged ---");
-        double movtoX = e.getX() - obx;
-        double movtoY = oby - e.getY();
 
-        bx += movtoX;
-        by += movtoY;
-        movtoX = e.getX() - oax;
-        movtoY = oay - e.getY();
+        double movtoX = e.getX() - pivo.obterX();
+        double movtoY = pivo.obterY() - e.getY();
+        p0.atribuirX(p0.obterX() + movtoX);
+        p0.atribuirY(p0.obterY() + movtoY);
 
-        ax += movtoX;
-        ay += movtoY;
-
-        //Dump ...
-        //System.out.println("posMouse: " + bx + " / " + by);
-        obx = e.getX();
-        oby = e.getY();
-        oax = e.getX();
-        oay = e.getY();
+        pivo.atribuirX(e.getX());
+        pivo.atribuirY(e.getY());
 
         glDrawable.display();
     }
@@ -237,4 +170,5 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
     public double RetornaY(double angulo, double raio) {
         return (raio * Math.sin(Math.PI * angulo / 180.0));
     }
+
 }
