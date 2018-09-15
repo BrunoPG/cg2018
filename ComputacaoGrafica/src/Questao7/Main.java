@@ -21,15 +21,15 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
 public class Main implements GLEventListener, KeyListener, MouseListener, MouseMotionListener {
-
+    
     private GL gl;
     private GLU glu;
     private GLAutoDrawable glDrawable;
     private Ponto4D p0 = new Ponto4D(100.0, 100.0, 0.0, 0.0);
+    private Ponto4D pi = new Ponto4D(100.0, 100.0, 0.0, 0.0);
     private Ponto4D pivo = new Ponto4D(0.0, 0.0, 0.0, 0.0);
-    private Ponto4D spoint = new Ponto4D(0.0, 0.0, 0.0, 0.0);
-    private double qtdPontos = 10.0;
-
+    private BoundingBox bBox = new BoundingBox(RetornaX(45, 100.0) + 100, RetornaY(45, 100.0) + 100, 0.0, RetornaX(225, 100.0) + 100, RetornaY(225, 100.0) + 100, 0.0);
+    
     public void init(GLAutoDrawable drawable) {
         System.out.println(" --- init ---");
         glDrawable = drawable;
@@ -43,11 +43,11 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
     //exibicaoPrincipal
     public void display(GLAutoDrawable arg0) {
         gl.glClear(GL.GL_COLOR_BUFFER_BIT);
-
+        
         gl.glMatrixMode(GL.GL_MODELVIEW);
         gl.glLoadIdentity();
         glu.gluOrtho2D(-400.0f, 400.0f, -400.0f, 400.0f);
-
+        
         SRU();
 
         // circulo grande
@@ -59,8 +59,8 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
         }
         gl.glEnd();
         // ponto
-        gl.glColor3f(1.0f, 0.0f, 0.0f);
-        gl.glPointSize(7.0f);
+        gl.glColor3f(0.0f, 0.0f, 0.0f);
+        gl.glPointSize(3.0f);
         gl.glBegin(GL.GL_POINTS);
         gl.glVertex2d(p0.obterX(), p0.obterY());
         gl.glEnd();
@@ -69,85 +69,96 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
         gl.glLineWidth(2.0f);
         gl.glBegin(GL.GL_LINE_LOOP);
         for (int x = 0; x < 360; x++) {
-            gl.glVertex2d(RetornaX(x, 10.0)+100, RetornaY(x, 10.0) + 100);
+            gl.glVertex2d(RetornaX(x, 30.0) + p0.obterX(), RetornaY(x, 30.0) + p0.obterY());
         }
         gl.glEnd();
+        //quadrado
+        //if(p0.obterX()){
+        //gl.glColor3f(1.0f, 0.0f, 0.0f);
+        //}
+        //else
+        if (bBox.isIn(p0.obterX(), p0.obterY())) {
+            gl.glColor3f(0.0f, 1.0f, 1.0f);
+        } else {
+            gl.glColor3f(1.0f, 0.0f, 0.0f);
+        }
+        bBox.desenharOpenGLBBox(gl);
         gl.glFlush();
     }
-
+    
     public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
             case KeyEvent.VK_1:
-
+                
                 glDrawable.display();
                 break;
-
+            
         }
     }
-
+    
     public void mouseEntered(MouseEvent e) {
     }
-
+    
     public void mouseExited(MouseEvent e) {
     }
-
+    
     public void mousePressed(MouseEvent e) {
 //        System.out.println("x=" + e.getX() + "y=" + e.getY());
 //        System.out.println("x=" + e.getXOnScreen() + "y=" + e.getYOnScreen());
+
         pivo.atribuirX(e.getX());
         pivo.atribuirY(e.getY());
         //antigoX = e.getX();
         //antigoY = e.getY();
+        
     }
-
+    
     public void mouseReleased(MouseEvent e) {
-
+        p0.atribuirX(pi.obterX());
+        p0.atribuirY(pi.obterY());
+        glDrawable.display();
     }
-
+    
     public void mouseClicked(MouseEvent e) {
     }
-
+    
     public void mouseDragged(MouseEvent e) {
         System.out.println(" --- mouseDragged ---");
-
+        
         double movtoX = e.getX() - pivo.obterX();
         double movtoY = pivo.obterY() - e.getY();
         p0.atribuirX(p0.obterX() + movtoX);
         p0.atribuirY(p0.obterY() + movtoY);
-
+        
         pivo.atribuirX(e.getX());
         pivo.atribuirY(e.getY());
-
+        bBox.atualizarBBox(p0);
         glDrawable.display();
     }
-
+    
     public void mouseMoved(MouseEvent e) {
     }
-
+    
     public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
         System.out.println(" --- reshape ---");
         gl.glMatrixMode(GL.GL_PROJECTION);
         gl.glLoadIdentity();
         gl.glViewport(0, 0, width, height);
     }
-
+    
     public void displayChanged(GLAutoDrawable arg0, boolean arg1, boolean arg2) {
         System.out.println(" --- displayChanged ---");
     }
-
+    
     public void keyReleased(KeyEvent arg0) {
         System.out.println(" --- keyReleased ---");
     }
-
+    
     public void keyTyped(KeyEvent arg0) {
         System.out.println(" --- keyTyped ---");
     }
-
+    
     public void SRU() {
-//		gl.glDisable(gl.GL_TEXTURE_2D);
-//		gl.glDisableClientState(gl.GL_TEXTURE_COORD_ARRAY);
-//		gl.glDisable(gl.GL_LIGHTING); //TODO: [D] FixMe: check if lighting and texture is enabled
-
         // eixo x
         gl.glColor3f(1.0f, 0.0f, 0.0f);
         gl.glLineWidth(1.0f);
@@ -162,13 +173,13 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
         gl.glVertex2f(0.0f, 200.0f);
         gl.glEnd();
     }
-
+    
     public double RetornaX(double angulo, double raio) {
         return (raio * Math.cos(Math.PI * angulo / 180.0));
     }
-
+    
     public double RetornaY(double angulo, double raio) {
         return (raio * Math.sin(Math.PI * angulo / 180.0));
     }
-
+    
 }
