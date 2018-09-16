@@ -33,6 +33,7 @@ public final class BoundingBox {
         this.maiorX = greaterX;
         this.maiorY = greaterY;
         this.maiorZ = greaterZ;
+       // System.out.println("maiorx=" + maiorX + ", menorx=" + menorX + ", maiory=" + maiorY + ", menory=" + menorY);
     }
 
     public void atribuirBoundingBox(double smallerX, double smallerY, double smallerZ, double greaterX, double greaterY, double greaterZ) {
@@ -138,10 +139,6 @@ public final class BoundingBox {
     }
 
     public boolean isIn(double x, double y) {
-        if (x >= maiorX || y >= maiorY||x <= menorX || y <= menorY) {
-            return false;
-        } else {
-            return true;
-        }
+        return !(x > maiorX || y > maiorY || x < menorX || y < menorY);
     }
 }
