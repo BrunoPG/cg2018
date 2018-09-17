@@ -50,7 +50,7 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
         glu.gluOrtho2D(-400.0f, 400.0f, -400.0f, 400.0f);
 
         SRU();
-        // quadrado vermelho
+        // quadrado 
         bBox = new BoundingBox(RetornaX(225, 100.0) + 100, RetornaY(225, 100.0) + 100, 0.0, RetornaX(45, 100.0) + 100, RetornaY(45, 100.0) + 100, 0.0);
         // circulo grande
         gl.glColor3f(0.0f, 0.0f, 0.0f);
@@ -78,11 +78,11 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
         //System.out.println(bBox.isIn(p0.obterX(), p0.obterY()));
         //quadrado
         if (limit) {
-            gl.glColor3f(1.0f, 0.0f, 1.0f);
-        } else if (bBox.isIn(p0.obterX(), p0.obterY())) {
-            gl.glColor3f(1.0f, 0.0f, 0.0f);
-        } else {
             gl.glColor3f(0.0f, 1.0f, 1.0f);
+        } else if (bBox.isIn(p0.obterX(), p0.obterY())) {
+            gl.glColor3f(1.0f, 0.0f, 1.0f);
+        } else {
+            gl.glColor3f(1.0f, 1.0f, 0.0f);
         }
         bBox.desenharOpenGLBBox(gl);
         gl.glFlush();
@@ -131,27 +131,29 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
 
     public void mouseDragged(MouseEvent e) {
         //System.out.println(" --- mouseDragged ---");
+        if (!limit) {
+            double movtoX = e.getX() - pivo.obterX();
+            double movtoY = pivo.obterY() - e.getY();
+            p0.atribuirX(p0.obterX() + movtoX);
+            p0.atribuirY(p0.obterY() + movtoY);
 
-        double movtoX = e.getX() - pivo.obterX();
-        double movtoY = pivo.obterY() - e.getY();
-        p0.atribuirX(p0.obterX() + movtoX);
-        p0.atribuirY(p0.obterY() + movtoY);
+            pivo.atribuirX(e.getX());
+            pivo.atribuirY(e.getY());
+            px = (int) p0.obterX();
+            py = (int) p0.obterY();
 
-        pivo.atribuirX(e.getX());
-        pivo.atribuirY(e.getY());
-        px = p0.obterX();
-        py = p0.obterY();
-
-        for (int x = 0; x < 360; x++) {
-            //if ((p0.obterX() == (RetornaX(x, 100.0) + 100)) || (p0.obterY() == (RetornaY(x, 100.0) + 100))) {
-            lx = RetornaX(x, 100.0) + 100;
-            ly = RetornaY(x, 100.0) + 100;
-System.out.println("mouse x,y="+px+","+py);
-            if (px == lx || py == ly) {
-                limit = true;
+            for (int x = 0; x < 360; x++) {
+                //if ((p0.obterX() == (RetornaX(x, 100.0) + 100)) || (p0.obterY() == (RetornaY(x, 100.0) + 100))) {
+                lx = (int) RetornaX(x, 100.0) + 100;
+                ly = (int) (RetornaY(x, 100.0) + 100);
+                if (px == lx && py == ly) {
+                    limit = true;
+                    //break;
+                }
             }
         }
         glDrawable.display();
+//ta funfando, quando estiver em cima do circulo grande, fica rosa
     }
 
     public void mouseMoved(MouseEvent e) {
