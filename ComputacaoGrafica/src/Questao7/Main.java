@@ -141,15 +141,18 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
             pivo.atribuirY(e.getY());
             px = (int) p0.obterX();
             py = (int) p0.obterY();
-
-            for (int x = 0; x < 360; x++) {
-                //if ((p0.obterX() == (RetornaX(x, 100.0) + 100)) || (p0.obterY() == (RetornaY(x, 100.0) + 100))) {
-                lx = (int) RetornaX(x, 100.0) + 100;
-                ly = (int) (RetornaY(x, 100.0) + 100);
-                if (px == lx && py == ly) {
-                    limit = true;
-                    //break;
-                }
+            System.out.println(limiteCirculo(p0.obterX(),p0.obterY()));
+//            for (int x = 0; x < 360; x++) {
+//                //if ((p0.obterX() == (RetornaX(x, 100.0) + 100)) || (p0.obterY() == (RetornaY(x, 100.0) + 100))) {
+//                lx = (int) RetornaX(x, 100.0) + 100;
+//                ly = (int) (RetornaY(x, 100.0) + 100);
+//                if (px == lx && py == ly) {
+//                    limit = true;
+//                    //break;
+//                }
+//          }
+            if (limiteCirculo(p0.obterX(), p0.obterY()) >= 100) {
+                limit = true;
             }
         }
         glDrawable.display();
@@ -202,4 +205,8 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
         return (raio * Math.sin(Math.PI * angulo / 180.0));
     }
 
+    public double limiteCirculo(double x, double y) {
+        double root = Math.sqrt(Math.pow((100 - x), 2) + Math.pow((100 - y), 2));
+        return root;
+    }
 }
