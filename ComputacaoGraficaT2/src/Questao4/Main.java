@@ -69,7 +69,10 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
         gl.glVertex2d(ax, ay);
         gl.glVertex2d(bx, by);
         gl.glEnd();
-
+        gl.glBegin(GL.GL_POINTS);
+        gl.glVertex2d(10, 20);
+        gl.glVertex2d(15, 25);
+        gl.glEnd();
         gl.glFlush();
     }
 
