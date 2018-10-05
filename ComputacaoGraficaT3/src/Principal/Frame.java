@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Principal;
+package Questao4;
 
 /**
  *
@@ -26,7 +26,7 @@ public class Frame extends JFrame{
 	
 	public Frame() {		
 		// Cria o frame.
-		super("CG-N3_Questao3");   
+		super("CG-N2_Questao4");   
 		setBounds(300,250,janelaLargura,janelaAltura+22);  // 500 + 22 da borda do titulo da janela
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		getContentPane().setLayout(new BorderLayout());

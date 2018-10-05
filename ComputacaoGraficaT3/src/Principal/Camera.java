@@ -11,4 +11,11 @@ package Principal;
  */
 public class Camera {
     
+    private float XMax;
+    private float XMin;
+    private float YMax;
+    private float YMin;
+   
+    private int zoom=0;
+    
 }

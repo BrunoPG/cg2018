@@ -9,7 +9,7 @@ public final class BoundingBox {
 	private double maiorX;
 	private double maiorY;
 	private double maiorZ;
-	private Point4D centro = new Point4D();
+	private Ponto4D centro = new Ponto4D();
 //    private Color color;
 
 
@@ -36,7 +36,7 @@ public final class BoundingBox {
 		processarCentroBBox();
 	}
 		
-	public void atualizarBBox(Point4D point) {
+	public void atualizarBBox(Ponto4D point) {
 	    atualizarBBox(point.GetX(), point.GetY(), point.GetZ());
 	}
 
@@ -124,7 +124,7 @@ public final class BoundingBox {
 	}
 	
 	/// Obter ponto do centro da BBox.
-	public Point4D obterCentro() {
+	public Ponto4D obterCentro() {
 		return centro;
 	}
 
