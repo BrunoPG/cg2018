@@ -37,7 +37,7 @@ public final class BoundingBox {
 	}
 		
 	public void atualizarBBox(Ponto4D point) {
-	    atualizarBBox(point.GetX(), point.GetY(), point.GetZ());
+	    atualizarBBox(point.obterX(), point.obterY(), point.obterZ());
 	}
 
 	public void atualizarBBox(double x, double y, double z) {
@@ -59,9 +59,9 @@ public final class BoundingBox {
 	}
 	
 	public void processarCentroBBox() {
-	    centro.SetX((maiorX + menorX)/2);
-	    centro.SetY((maiorY + menorY)/2);
-	    centro.SetZ((maiorZ + menorZ)/2);
+	    centro.atribuirX((maiorX + menorX)/2);
+	    centro.atribuirY((maiorY + menorY)/2);
+	    centro.atribuirZ((maiorZ + menorZ)/2);
 	}
 
 	public void desenharOpenGLBBox(GL gl) {

@@ -1,3 +1,5 @@
+package Principal;
+
 import javax.media.opengl.GL;
 public final class ObjetoGrafico {
 	GL gl;

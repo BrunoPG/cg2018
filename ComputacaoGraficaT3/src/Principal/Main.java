@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Questao4;
+package Principal;
 
 /**
  *
@@ -35,6 +35,7 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
     private double extraY = 0.0;
     private double oax, oay, obx, oby = 0.0;
     private double rax, ray, rbx, rby = 0.0;
+    private Camera cam;
 
     public void init(GLAutoDrawable drawable) {
         System.out.println(" --- init ---");
@@ -44,15 +45,15 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
         glDrawable.setGL(new DebugGL(gl));
         System.out.println("Espaco de desenho com tamanho: " + drawable.getWidth() + " x " + drawable.getHeight());
         gl.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+        cam=new Camera();
     }
 
     //exibicaoPrincipal
     public void display(GLAutoDrawable arg0) {
         gl.glClear(GL.GL_COLOR_BUFFER_BIT);
-
         gl.glMatrixMode(GL.GL_MODELVIEW);
         gl.glLoadIdentity();
-        glu.gluOrtho2D(-400.0f, 400.0f, -400.0f, 400.0f);
+        glu.gluOrtho2D(cam.getXMax(),cam.getXMin(),cam.getYMax(),cam.getYMin());
 
         SRU();
 
@@ -130,6 +131,30 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
                 by = RetornaY(angle, thunder) + extraY;
                 glDrawable.display();
                 break;
+            case KeyEvent.VK_1:
+                cam.moveCamera(1);
+                glDrawable.display();
+                break;
+            case KeyEvent.VK_2:
+                cam.moveCamera(2);
+                glDrawable.display();
+                break;
+            case KeyEvent.VK_3:
+                cam.moveCamera(3);
+                glDrawable.display();
+                break;
+            case KeyEvent.VK_4:
+                cam.moveCamera(4);
+                glDrawable.display();
+                break;
+            case KeyEvent.VK_5:
+                cam.moveCamera(5);
+                glDrawable.display();
+                break;
+            case KeyEvent.VK_6:
+                cam.moveCamera(6);
+                glDrawable.display();
+                break;    
         }
     }
 
