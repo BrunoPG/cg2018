@@ -154,6 +154,13 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
             case KeyEvent.VK_6:
                 cam.moveCamera(6);
                 glDrawable.display();
+                break;   
+             case KeyEvent.VK_L:
+                ObjetoGrafico c = new ObjetoGrafico();
+                c.atribuirGL(gl);
+                //c.atribuirIdentidade();
+                c.desenha();
+                //glDrawable.display();
                 break;    
         }
     }
