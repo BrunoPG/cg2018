@@ -1,8 +1,11 @@
 package Principal;
 
 import javax.media.opengl.GL;
+import javax.media.opengl.GLAutoDrawable;
 public final class ObjetoGrafico {
 	GL gl;
+        //bruno do futuro, substituir o gl pelo drawable(igual no main)
+        //private GLAutoDrawable glDrawable;
 	private float tamanho = 2.0f;
 
 	private int primitiva = GL.GL_LINE_LOOP;
@@ -41,22 +44,21 @@ public final class ObjetoGrafico {
 	}
 	
 	public void desenha() {
-		gl.glColor3f(0.0f, 0.0f, 0.0f);
+                gl.glMatrixMode(GL.GL_MODELVIEW);
+                gl.glLoadIdentity();
+		gl.glColor3f(0.0f, 0.0f, 1.0f);
 		gl.glLineWidth(tamanho);
 		gl.glPointSize(tamanho);
-
-		gl.glPushMatrix();
-			gl.glMultMatrixd(matrizObjeto.GetDate(), 0);
-			gl.glBegin(primitiva);
-				for (byte i=0; i < vertices.length; i++) {
-					gl.glVertex2d(vertices[i].obterX(), vertices[i].obterY());
-				}
-			gl.glEnd();
-
+	        gl.glPushMatrix();
+	        gl.glMultMatrixd(matrizObjeto.GetDate(), 0);
+		gl.glBegin(primitiva);
+                for (byte i=0; i < vertices.length; i++) {
+		   gl.glVertex2d(vertices[i].obterX(), vertices[i].obterY());
+                }
+		gl.glEnd();
 			//////////// ATENCAO: chamar desenho dos filhos... 
-
-		gl.glPopMatrix();
-	}
+	        gl.glPopMatrix();
+               	}
 
 	public void translacaoXYZ(double tx, double ty, double tz) {
 		Transformacao4D matrizTranslate = new Transformacao4D();

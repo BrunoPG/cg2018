@@ -45,7 +45,7 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
         glDrawable.setGL(new DebugGL(gl));
         System.out.println("Espaco de desenho com tamanho: " + drawable.getWidth() + " x " + drawable.getHeight());
         gl.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-        cam=new Camera();
+        cam = new Camera();
     }
 
     //exibicaoPrincipal
@@ -53,7 +53,7 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
         gl.glClear(GL.GL_COLOR_BUFFER_BIT);
         gl.glMatrixMode(GL.GL_MODELVIEW);
         gl.glLoadIdentity();
-        glu.gluOrtho2D(cam.getXMax(),cam.getXMin(),cam.getYMax(),cam.getYMin());
+        glu.gluOrtho2D(cam.getXMax(), cam.getXMin(), cam.getYMax(), cam.getYMin());
 
         SRU();
 
@@ -70,6 +70,14 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
         gl.glVertex2d(ax, ay);
         gl.glVertex2d(bx, by);
         gl.glEnd();
+        
+        gl.glBegin(GL.GL_LINE_LOOP);
+        ObjetoGrafico c = new ObjetoGrafico();
+        c.atribuirGL(gl);
+        c.atribuirIdentidade();
+        c.desenha();
+        gl.glEnd();
+        
         gl.glFlush();
     }
 
@@ -154,14 +162,15 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
             case KeyEvent.VK_6:
                 cam.moveCamera(6);
                 glDrawable.display();
-                break;   
-             case KeyEvent.VK_L:
+                break;
+            case KeyEvent.VK_L:
                 ObjetoGrafico c = new ObjetoGrafico();
                 c.atribuirGL(gl);
                 //c.atribuirIdentidade();
                 c.desenha();
                 //glDrawable.display();
-                break;    
+                System.out.println("Objeto criado");
+                break;
         }
     }
 
@@ -197,7 +206,7 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
     }
 
     public void mouseDragged(MouseEvent e) {
-        System.out.println(" --- mouseDragged ---");
+
         double movtoX = e.getX() - obx;
         double movtoY = oby - e.getY();
 
