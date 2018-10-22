@@ -1,280 +1,150 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Principal;
 
-/**
- *
- * @author Bruno Gibicoski
- */
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+
 import javax.media.opengl.DebugGL;
 import javax.media.opengl.GL;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLEventListener;
 import javax.media.opengl.glu.GLU;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 
-public class Main implements GLEventListener, KeyListener, MouseListener, MouseMotionListener {
+public class Main implements GLEventListener, KeyListener {
 
     private GL gl;
     private GLU glu;
     private GLAutoDrawable glDrawable;
-    private double ax = 0.0;
-    private double ay = 0.0;
-    private double bx = 70.71067811865476;
-    private double by = 70.71067811865476;
-    private double angle = 45.0;
-    private double thunder = 100.0;
-    private double extraX = 0.0;
-    private double extraY = 0.0;
-    private double oax, oay, obx, oby = 0.0;
-    private double rax, ray, rbx, rby = 0.0;
-    private Camera cam;
 
+//	private ObjetoGrafico objeto = new ObjetoGrafico();
+    private ObjetoGrafico[] objetos = {
+        new ObjetoGrafico(),
+        new ObjetoGrafico()};
+
+    // "render" feito logo apos a inicializacao do contexto OpenGL.
     public void init(GLAutoDrawable drawable) {
-        System.out.println(" --- init ---");
         glDrawable = drawable;
         gl = drawable.getGL();
         glu = new GLU();
         glDrawable.setGL(new DebugGL(gl));
-        System.out.println("Espaco de desenho com tamanho: " + drawable.getWidth() + " x " + drawable.getHeight());
+
         gl.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-        cam = new Camera();
+
+        for (byte i = 0; i < objetos.length; i++) {
+            objetos[i].atribuirGL(gl);
+        }
+//		objeto.atribuirGL(gl);
     }
 
-    //exibicaoPrincipal
+    // metodo definido na interface GLEventListener.
+    // "render" feito pelo cliente OpenGL.
     public void display(GLAutoDrawable arg0) {
         gl.glClear(GL.GL_COLOR_BUFFER_BIT);
+        glu.gluOrtho2D(-30.0f, 30.0f, -30.0f, 30.0f);
+
         gl.glMatrixMode(GL.GL_MODELVIEW);
         gl.glLoadIdentity();
-        glu.gluOrtho2D(cam.getXMax(), cam.getXMin(), cam.getYMax(), cam.getYMin());
 
-        SRU();
+        gl.glLineWidth(1.0f);
+        gl.glPointSize(1.0f);
 
-        // seu desenho ...
-        gl.glColor3f(0.0f, 0.0f, 0.0f);
-        gl.glLineWidth(3.0f);
-        gl.glPointSize(5.0f);//mudar tamanho ponto
-        gl.glBegin(GL.GL_LINES);
-        gl.glVertex2d(ax, ay);
-        gl.glVertex2d(bx, by);
-        //System.out.println("bx="+bx+"by="+by);
-        gl.glEnd();
-        gl.glBegin(GL.GL_POINTS);
-        gl.glVertex2d(ax, ay);
-        gl.glVertex2d(bx, by);
-        gl.glEnd();
-        
-        gl.glBegin(GL.GL_LINE_LOOP);
-        ObjetoGrafico c = new ObjetoGrafico();
-        c.atribuirGL(gl);
-        c.atribuirIdentidade();
-        c.desenha();
-        gl.glEnd();
-        
+        desenhaSRU();
+        for (byte i = 0; i < objetos.length; i++) {
+            objetos[i].desenha();
+        }
+
+//		objeto.desenha();
         gl.glFlush();
     }
 
+    public void desenhaSRU() {
+        gl.glColor3f(1.0f, 0.0f, 0.0f);
+        gl.glBegin(GL.GL_LINES);
+        gl.glVertex2f(-20.0f, 0.0f);
+        gl.glVertex2f(20.0f, 0.0f);
+        gl.glEnd();
+        gl.glColor3f(0.0f, 1.0f, 0.0f);
+        gl.glBegin(GL.GL_LINES);
+        gl.glVertex2f(0.0f, -20.0f);
+        gl.glVertex2f(0.0f, 20.0f);
+        gl.glEnd();
+    }
+
     public void keyPressed(KeyEvent e) {
+
         switch (e.getKeyCode()) {
-            case KeyEvent.VK_Q:
-                extraX = extraX - 10.0;
-                ax = ax - 10.0;
-                bx = bx - 10.0;
-                glDrawable.display();
+            case KeyEvent.VK_P:
+                objetos[0].exibeVertices();
                 break;
-            case KeyEvent.VK_W:
-                extraX = extraX + 10.0;
-                ax = ax + 10.0;
-                bx = bx + 10.0;
-                glDrawable.display();
+            case KeyEvent.VK_M:
+                objetos[0].exibeMatriz();
                 break;
-            case KeyEvent.VK_E:
-                extraY = extraY - 10.0;
-                ay = ay - 10.0;
-                by = by - 10.0;
-                glDrawable.display();
-                break;
+
             case KeyEvent.VK_R:
-                extraY = extraY + 10.0;
-                ay = ay + 10.0;
-                by = by + 10.0;
-                glDrawable.display();
+                objetos[0].atribuirIdentidade();
                 break;
-            case KeyEvent.VK_A:
-                if (thunder > 10) {
-                    thunder = thunder - 10.0;
-                }
-                bx = RetornaX(angle, thunder) + extraX;
-                by = RetornaY(angle, thunder) + extraY;
-                glDrawable.display();
+
+            case KeyEvent.VK_RIGHT:
+                objetos[0].translacaoXYZ(2.0, 0.0, 0.0);
                 break;
-            case KeyEvent.VK_S:
-                thunder = thunder + 10.0;
-                bx = RetornaX(angle, thunder) + extraX;
-                by = RetornaY(angle, thunder) + extraY;
-                glDrawable.display();
+            case KeyEvent.VK_LEFT:
+                objetos[0].translacaoXYZ(-2.0, 0.0, 0.0);
                 break;
-            case KeyEvent.VK_Z:
-                angle = angle + 5.0;
-                if (angle == 360.0) {
-                    angle = 0.0;
-                }
-                bx = RetornaX(angle, thunder) + extraX;
-                by = RetornaY(angle, thunder) + extraY;
-                glDrawable.display();
+            case KeyEvent.VK_UP:
+                objetos[0].translacaoXYZ(0.0, 2.0, 0.0);
                 break;
-            case KeyEvent.VK_X:
-                angle = angle - 5.0;
-                if (angle == 0.0) {
-                    angle = 360.0;
-                }
-                bx = RetornaX(angle, thunder) + extraX;
-                by = RetornaY(angle, thunder) + extraY;
-                glDrawable.display();
+            case KeyEvent.VK_DOWN:
+                objetos[0].translacaoXYZ(0.0, -2.0, 0.0);
                 break;
+
+            case KeyEvent.VK_PAGE_UP:
+                objetos[0].escalaXYZ(2.0, 2.0);
+                break;
+            case KeyEvent.VK_PAGE_DOWN:
+                objetos[0].escalaXYZ(0.5, 0.5);
+                break;
+
+            case KeyEvent.VK_HOME:
+//			objetos[0].RoracaoZ();
+                break;
+
             case KeyEvent.VK_1:
-                cam.moveCamera(1);
-                glDrawable.display();
+                objetos[0].escalaXYZPtoFixo(0.5, new Ponto4D(-15.0, -15.0, 0.0, 0.0));
                 break;
+
             case KeyEvent.VK_2:
-                cam.moveCamera(2);
-                glDrawable.display();
+                objetos[0].escalaXYZPtoFixo(2.0, new Ponto4D(-15.0, -15.0, 0.0, 0.0));
                 break;
+
             case KeyEvent.VK_3:
-                cam.moveCamera(3);
-                glDrawable.display();
-                break;
-            case KeyEvent.VK_4:
-                cam.moveCamera(4);
-                glDrawable.display();
-                break;
-            case KeyEvent.VK_5:
-                cam.moveCamera(5);
-                glDrawable.display();
-                break;
-            case KeyEvent.VK_6:
-                cam.moveCamera(6);
-                glDrawable.display();
-                break;
-            case KeyEvent.VK_L:
-                ObjetoGrafico c = new ObjetoGrafico();
-                c.atribuirGL(gl);
-                //c.atribuirIdentidade();
-                c.desenha();
-                //glDrawable.display();
-                System.out.println("Objeto criado");
+                objetos[0].rotacaoZPtoFixo(10.0, new Ponto4D(-15.0, -15.0, 0.0, 0.0));
                 break;
         }
-    }
-
-    public void mouseEntered(MouseEvent e) {
-    }
-
-    public void mouseExited(MouseEvent e) {
-    }
-
-    public void mousePressed(MouseEvent e) {
-//	    if ((e.getModifiers() & e.BUTTON1_MASK) != 0) {
-        // System.out.println(" --- mousePressed ---");
-        obx = e.getX();
-        oby = e.getY();
-        oax = e.getX();
-        oay = e.getY();
-        rbx = bx;
-        rby = by;
-        rax = ax;
-        ray = ay;
-//	    }
-    }
-
-    public void mouseReleased(MouseEvent e) {
-        bx = rbx;
-        by = rby;
-        ax = rax;
-        ay = ray;
-        glDrawable.display();
-    }
-
-    public void mouseClicked(MouseEvent e) {
-    }
-
-    public void mouseDragged(MouseEvent e) {
-
-        double movtoX = e.getX() - obx;
-        double movtoY = oby - e.getY();
-
-        bx += movtoX;
-        by += movtoY;
-        movtoX = e.getX() - oax;
-        movtoY = oay - e.getY();
-
-        ax += movtoX;
-        ay += movtoY;
-
-        //Dump ...
-        //System.out.println("posMouse: " + bx + " / " + by);
-        obx = e.getX();
-        oby = e.getY();
-        oax = e.getX();
-        oay = e.getY();
 
         glDrawable.display();
     }
 
-    public void mouseMoved(MouseEvent e) {
-    }
-
+    // metodo definido na interface GLEventListener.
+    // "render" feito depois que a janela foi redimensionada.
     public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
-        System.out.println(" --- reshape ---");
+        gl.glViewport(0, 0, width, height);
         gl.glMatrixMode(GL.GL_PROJECTION);
         gl.glLoadIdentity();
-        gl.glViewport(0, 0, width, height);
+        // System.out.println(" --- reshape ---");
     }
 
+    // metodo definido na interface GLEventListener.
+    // "render" feito quando o modo ou dispositivo de exibicao associado foi
+    // alterado.
     public void displayChanged(GLAutoDrawable arg0, boolean arg1, boolean arg2) {
-        System.out.println(" --- displayChanged ---");
+        // System.out.println(" --- displayChanged ---");
     }
 
     public void keyReleased(KeyEvent arg0) {
-        System.out.println(" --- keyReleased ---");
+        // System.out.println(" --- keyReleased ---");
     }
 
     public void keyTyped(KeyEvent arg0) {
-        System.out.println(" --- keyTyped ---");
+        // System.out.println(" --- keyTyped ---");
     }
 
-    public void SRU() {
-//		gl.glDisable(gl.GL_TEXTURE_2D);
-//		gl.glDisableClientState(gl.GL_TEXTURE_COORD_ARRAY);
-//		gl.glDisable(gl.GL_LIGHTING); //TODO: [D] FixMe: check if lighting and texture is enabled
-
-        // eixo x
-        gl.glColor3f(1.0f, 0.0f, 0.0f);
-        gl.glLineWidth(1.0f);
-        gl.glBegin(GL.GL_LINES);
-        gl.glVertex2f(-200.0f, 0.0f);
-        gl.glVertex2f(200.0f, 0.0f);
-        gl.glEnd();
-        // eixo y
-        gl.glColor3f(0.0f, 1.0f, 0.0f);
-        gl.glBegin(GL.GL_LINES);
-        gl.glVertex2f(0.0f, -200.0f);
-        gl.glVertex2f(0.0f, 200.0f);
-        gl.glEnd();
-    }
-
-    public double RetornaX(double angulo, double raio) {
-        return (raio * Math.cos(Math.PI * angulo / 180.0));
-    }
-
-    public double RetornaY(double angulo, double raio) {
-        return (raio * Math.sin(Math.PI * angulo / 180.0));
-    }
 }
