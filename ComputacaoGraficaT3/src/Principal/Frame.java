@@ -16,7 +16,7 @@ public class Frame extends JFrame {
 
     public Frame() {
         // Cria o frame.
-        super("CG-N3_Trasnformacao");
+        super("CG-N3");
         setBounds(300, 250, janelaLargura, janelaAltura + 22);  // 400 + 22 da borda do t’tulo da janela
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new BorderLayout());

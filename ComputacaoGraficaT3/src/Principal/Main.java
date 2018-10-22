@@ -130,6 +130,8 @@ public class Main implements GLEventListener, KeyListener {
         gl.glMatrixMode(GL.GL_PROJECTION);
         gl.glLoadIdentity();
         // System.out.println(" --- reshape ---");
+        //NÃO MEXE NESSA BAGAÇA
+        //translatar primeiro depois rotacionar
     }
 
     // metodo definido na interface GLEventListener.
