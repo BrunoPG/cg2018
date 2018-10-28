@@ -2,6 +2,7 @@ package Principal;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.ArrayList;
 
 import javax.media.opengl.DebugGL;
 import javax.media.opengl.GL;
@@ -14,11 +15,12 @@ public class Main implements GLEventListener, KeyListener {
     private GL gl;
     private GLU glu;
     private GLAutoDrawable glDrawable;
-
-//	private ObjetoGrafico objeto = new ObjetoGrafico();
-    private ObjetoGrafico[] objetos = {
-        new ObjetoGrafico(),
-        new ObjetoGrafico()};
+    private int focus = 0;
+    //private ObjetoGrafico[] objetos
+    //private ObjetoGrafico objeto = new ObjetoGrafico();
+    //private ObjetoGrafico[] objetos = {new ObjetoGrafico(), new ObjetoGrafico()};
+    ArrayList<ObjetoGrafico> objetos = new ArrayList<ObjetoGrafico>();
+//private ObjetoGrafico[] objetos;
 
     // "render" feito logo apos a inicializacao do contexto OpenGL.
     public void init(GLAutoDrawable drawable) {
@@ -26,13 +28,7 @@ public class Main implements GLEventListener, KeyListener {
         gl = drawable.getGL();
         glu = new GLU();
         glDrawable.setGL(new DebugGL(gl));
-
         gl.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-
-        for (byte i = 0; i < objetos.length; i++) {
-            objetos[i].atribuirGL(gl);
-        }
-//		objeto.atribuirGL(gl);
     }
 
     // metodo definido na interface GLEventListener.
@@ -48,8 +44,8 @@ public class Main implements GLEventListener, KeyListener {
         gl.glPointSize(1.0f);
 
         desenhaSRU();
-        for (byte i = 0; i < objetos.length; i++) {
-            objetos[i].desenha();
+        for (byte i = 0; i < objetos.size(); i++) {
+            objetos.get(i).desenha();
         }
 
 //		objeto.desenha();
@@ -70,54 +66,87 @@ public class Main implements GLEventListener, KeyListener {
     }
 
     public void keyPressed(KeyEvent e) {
+        if (objetos.size() > 0) {
+            switch (e.getKeyCode()) {
+                case KeyEvent.VK_P:
+                    objetos.get(focus).exibeVertices();
+                    break;
+                case KeyEvent.VK_M:
+                    objetos.get(focus).exibeMatriz();
+                    break;
 
-        switch (e.getKeyCode()) {
-            case KeyEvent.VK_P:
-                objetos[0].exibeVertices();
-                break;
-            case KeyEvent.VK_M:
-                objetos[0].exibeMatriz();
-                break;
+                case KeyEvent.VK_R:
+                    objetos.get(focus).atribuirIdentidade();
+                    break;
 
-            case KeyEvent.VK_R:
-                objetos[0].atribuirIdentidade();
-                break;
+                case KeyEvent.VK_RIGHT:
+                    objetos.get(focus).translacaoXYZ(2.0, 0.0, 0.0);
+                    break;
+                case KeyEvent.VK_LEFT:
+                    objetos.get(focus).translacaoXYZ(-2.0, 0.0, 0.0);
+                    break;
+                case KeyEvent.VK_UP:
+                    objetos.get(focus).translacaoXYZ(0.0, 2.0, 0.0);
+                    break;
+                case KeyEvent.VK_DOWN:
+                    objetos.get(focus).translacaoXYZ(0.0, -2.0, 0.0);
+                    break;
 
-            case KeyEvent.VK_RIGHT:
-                objetos[0].translacaoXYZ(2.0, 0.0, 0.0);
-                break;
-            case KeyEvent.VK_LEFT:
-                objetos[0].translacaoXYZ(-2.0, 0.0, 0.0);
-                break;
-            case KeyEvent.VK_UP:
-                objetos[0].translacaoXYZ(0.0, 2.0, 0.0);
-                break;
-            case KeyEvent.VK_DOWN:
-                objetos[0].translacaoXYZ(0.0, -2.0, 0.0);
-                break;
+                case KeyEvent.VK_PAGE_UP:
+                    objetos.get(focus).escalaXYZ(2.0, 2.0);
+                    break;
+                case KeyEvent.VK_PAGE_DOWN:
+                    objetos.get(focus).escalaXYZ(0.5, 0.5);
+                    break;
 
-            case KeyEvent.VK_PAGE_UP:
-                objetos[0].escalaXYZ(2.0, 2.0);
-                break;
-            case KeyEvent.VK_PAGE_DOWN:
-                objetos[0].escalaXYZ(0.5, 0.5);
-                break;
+                //case KeyEvent.VK_4:
+                //objetos.get(focus).rotacaoZ(0);
+                //  break;
+                case KeyEvent.VK_1:
+                    objetos.get(focus).escalaXYZPtoFixo(0.5, new Ponto4D(-15.0, -15.0, 0.0, 0.0));
+                    break;
 
-            case KeyEvent.VK_HOME:
-//			objetos[0].RoracaoZ();
-                break;
+                case KeyEvent.VK_2:
+                    objetos.get(focus).escalaXYZPtoFixo(2.0, new Ponto4D(-15.0, -15.0, 0.0, 0.0));
+                    break;
 
-            case KeyEvent.VK_1:
-                objetos[0].escalaXYZPtoFixo(0.5, new Ponto4D(-15.0, -15.0, 0.0, 0.0));
-                break;
+                case KeyEvent.VK_3:
+                    objetos.get(focus).rotacaoZPtoFixo(10.0, new Ponto4D(-15.0, -15.0, 0.0, 0.0));
+                    break;
 
-            case KeyEvent.VK_2:
-                objetos[0].escalaXYZPtoFixo(2.0, new Ponto4D(-15.0, -15.0, 0.0, 0.0));
-                break;
+                case KeyEvent.VK_4:
+                    if (focus < objetos.size() - 1) {
+                        focus++;
+                    }
+                    break;
+                case KeyEvent.VK_5:
+                    if (focus > 0 && objetos.size() > 0) {
+                        focus--;
+                    }
+                    break;
+                case KeyEvent.VK_6:
+                    objetos.add(new ObjetoGrafico());
+                    focus = objetos.size() - 1;
+                    objetos.get(focus).atribuirGL(gl);
 
-            case KeyEvent.VK_3:
-                objetos[0].rotacaoZPtoFixo(10.0, new Ponto4D(-15.0, -15.0, 0.0, 0.0));
-                break;
+                    break;
+                case KeyEvent.VK_7:
+                    //if (objetos.size() > 0) {
+                    objetos.remove(focus);
+                    focus = objetos.size() - 1;
+                    //}
+                    break;
+                case KeyEvent.VK_8:
+                    objetos.get(focus).adcionaVertice();
+                    break;
+                case KeyEvent.VK_9:
+                    objetos.get(focus).removeVertice(focus);
+                    break;
+            }
+        } else if (e.getKeyCode() == KeyEvent.VK_6) {
+            objetos.add(new ObjetoGrafico());
+            focus = objetos.size() - 1;
+            objetos.get(focus).atribuirGL(gl);
         }
 
         glDrawable.display();
@@ -147,6 +176,10 @@ public class Main implements GLEventListener, KeyListener {
 
     public void keyTyped(KeyEvent arg0) {
         // System.out.println(" --- keyTyped ---");
+    }
+
+    private float sc(float f) {
+        return f;
     }
 
 }
