@@ -2,15 +2,17 @@ package Principal;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
-
 import javax.media.opengl.DebugGL;
 import javax.media.opengl.GL;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLEventListener;
 import javax.media.opengl.glu.GLU;
 
-public class Main implements GLEventListener, KeyListener {
+public class Main implements GLEventListener, KeyListener, MouseListener, MouseMotionListener {
 
     private GL gl;
     private GLU glu;
@@ -99,9 +101,9 @@ public class Main implements GLEventListener, KeyListener {
                     objetos.get(focus).escalaXYZ(0.5, 0.5);
                     break;
 
-                //case KeyEvent.VK_4:
+                //case KeyEvent.VK_J:
                 //objetos.get(focus).rotacaoZ(0);
-                //  break;
+                //break;
                 case KeyEvent.VK_1:
                     objetos.get(focus).escalaXYZPtoFixo(0.5, new Ponto4D(-15.0, -15.0, 0.0, 0.0));
                     break;
@@ -115,35 +117,48 @@ public class Main implements GLEventListener, KeyListener {
                     break;
 
                 case KeyEvent.VK_4:
-                    if (focus < objetos.size() - 1) {
-                        focus++;
-                    }
-                    break;
-                case KeyEvent.VK_5:
-                    if (focus > 0 && objetos.size() > 0) {
-                        focus--;
-                    }
-                    break;
-                case KeyEvent.VK_6:
                     objetos.add(new ObjetoGrafico());
                     focus = objetos.size() - 1;
                     objetos.get(focus).atribuirGL(gl);
 
                     break;
-                case KeyEvent.VK_7:
+                case KeyEvent.VK_5:
                     //if (objetos.size() > 0) {
                     objetos.remove(focus);
                     focus = objetos.size() - 1;
                     //}
                     break;
+
+                case KeyEvent.VK_6:
+                    if (focus < objetos.size() - 1) {
+                        focus++;
+                    }
+                    break;
+                case KeyEvent.VK_7:
+                    if (focus > 0 && objetos.size() > 0) {
+                        focus--;
+                    }
+                    break;
                 case KeyEvent.VK_8:
-                    objetos.get(focus).adcionaVertice();
+                    //objetos.get(focus).adcionaVertice();
                     break;
                 case KeyEvent.VK_9:
-                    objetos.get(focus).removeVertice(focus);
+                    if (!objetos.get(focus).removeVertice()) {
+                        objetos.remove(focus);
+                        focus = objetos.size() - 1;
+                    }
+                    break;
+                case KeyEvent.VK_C:
+                    objetos.get(focus).color();
+                    break;
+                case KeyEvent.VK_Z:
+                    objetos.get(focus).addFilho();
+                    break;
+                case KeyEvent.VK_X:
+                    objetos.get(focus).removeFilho();
                     break;
             }
-        } else if (e.getKeyCode() == KeyEvent.VK_6) {
+        } else if (e.getKeyCode() == KeyEvent.VK_4) {
             objetos.add(new ObjetoGrafico());
             focus = objetos.size() - 1;
             objetos.get(focus).atribuirGL(gl);
@@ -159,7 +174,6 @@ public class Main implements GLEventListener, KeyListener {
         gl.glMatrixMode(GL.GL_PROJECTION);
         gl.glLoadIdentity();
         // System.out.println(" --- reshape ---");
-        //NÃO MEXE NESSA BAGAÇA
         //translatar primeiro depois rotacionar
     }
 
@@ -178,8 +192,36 @@ public class Main implements GLEventListener, KeyListener {
         // System.out.println(" --- keyTyped ---");
     }
 
-    private float sc(float f) {
-        return f;
+    public void mouseEntered(MouseEvent e) {
+    }
+
+    public void mouseExited(MouseEvent e) {
+    }
+
+    public void mousePressed(MouseEvent e) {
+   
+    }
+
+    public void mouseReleased(MouseEvent e) {
+
+    }
+
+    public void mouseClicked(MouseEvent e) {
+             if (objetos.size() > 0) {
+            
+            System.out.println("xy["+e.getX()+","+e.getY()+"]");
+            
+            objetos.get(focus).adcionaVertice((double) e.getX()-objetos.get(focus).vertices.get(objetos.get(focus).vertices.size()-1).obterX(), (double) objetos.get(focus).vertices.get(objetos.get(focus).vertices.size()-1).obterY()-e.getY());
+            glDrawable.display();
+        }
+
+    }
+
+    public void mouseDragged(MouseEvent e) {
+
+    }
+
+    public void mouseMoved(MouseEvent e) {
     }
 
 }

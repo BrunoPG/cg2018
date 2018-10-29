@@ -33,10 +33,12 @@ public class Frame extends JFrame {
         /* Cria um canvas, adiciona ao frame e objeto "ouvinte" 
 		 * para os eventos Gl, de mouse e teclado
          */
-        GLCanvas canvas = new GLCanvas(glCaps);
+              GLCanvas canvas = new GLCanvas(glCaps);
         add(canvas, BorderLayout.CENTER);
         canvas.addGLEventListener(renderer);
         canvas.addKeyListener(renderer);
+        canvas.addMouseListener(renderer);
+        canvas.addMouseMotionListener(renderer);
         canvas.requestFocus();
     }
 
