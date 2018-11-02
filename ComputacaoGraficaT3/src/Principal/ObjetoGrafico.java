@@ -12,8 +12,9 @@ public final class ObjetoGrafico {
     private float b = 1.0f;
     private float tamanho = 2.0f;
     private int color, focus = 0;
-    private int primitiva = GL.GL_LINE_LOOP;
-    private BoundingBox bBox;
+    
+    public int primitiva = GL.GL_LINE_STRIP;
+    public BoundingBox bBox;
     private Transformacao4D matrizObjeto = new Transformacao4D();
     /// Matrizes temporarias que sempre sao inicializadas com matriz Identidade entao podem ser "static".
     private static Transformacao4D matrizTmpTranslacao = new Transformacao4D();
@@ -26,18 +27,15 @@ public final class ObjetoGrafico {
     ArrayList<Ponto4D> vertices = new ArrayList<Ponto4D>();
 
 //	private Ponto4D[] vertices = { new Ponto4D(10.0, 10.0, 0.0, 1.0) };	
-    public ObjetoGrafico() {
-        this.vertices.add(new Ponto4D(10.0, 10.0, 0.0, 1.0));
-        this.vertices.add(new Ponto4D(20.0, 10.0, 0.0, 1.0));
-        this.vertices.add(new Ponto4D(20.0, 20.0, 0.0, 1.0));
-        this.vertices.add(new Ponto4D(10.0, 20.0, 0.0, 1.0));
-        //bBox = new BoundingBox(getBl().obterX(),getBl().obterY(),0.0,getTr().obterX(),getTr().obterY(),0.0);
+    public ObjetoGrafico(double x, double y) {
+        this.vertices.add(new Ponto4D(x, y, 0.0, 1.0));
 
-        //bBox.desenharOpenGLBBox(gl);
+        bBox = new BoundingBox(getBl().obterX(), getBl().obterY(), 0.0, getTr().obterX(), getTr().obterY(), 0.0);
+
     }
 
-    public void addFilho() {
-        filhos.add(new ObjetoGrafico());
+    public void addFilho(double x, double y) {
+        filhos.add(new ObjetoGrafico(x, y));
         focus = filhos.size() - 1;
         filhos.get(focus).atribuirGL(gl);
     }
@@ -123,8 +121,10 @@ public final class ObjetoGrafico {
     }
 
     public void adcionaVertice(Double x, Double y) {
-        this.vertices.add(new Ponto4D(x,y, 0.0, 1.0));
+        this.vertices.add(new Ponto4D(x, y, 0.0, 1.0));
+        bBox.atualizarBBox(x, y, 0.0);
         desenha();
+
     }
 
     public boolean removeVertice() {
@@ -167,6 +167,8 @@ public final class ObjetoGrafico {
             filhos.get(i).desenha();
         }
         gl.glPopMatrix();
+        bBox.atribuirBoundingBox(getBl().obterX(), getBl().obterY(), 0.0, getTr().obterX(), getTr().obterY(), 0.0);
+        bBox.desenharOpenGLBBox(gl);
     }
 
     public void translacaoXYZ(double tx, double ty, double tz) {
@@ -177,6 +179,10 @@ public final class ObjetoGrafico {
             filhos.get(i).translacaoXYZ(tx, ty, tz);
         }
 
+        bBox.atribuirBoundingBox(getBl().obterX(), getBl().obterY(), 0.0, getTr().obterX(), getTr().obterY(), 0.0);
+        bBox.translatarBox(tx, ty, tz);
+        bBox.desenharOpenGLBBox(gl);
+        desenha();
     }
 
     public void escalaXYZ(double Sx, double Sy) {
@@ -210,12 +216,16 @@ public final class ObjetoGrafico {
         matrizTmpTranslacaoInversa.atribuirTranslacao(ptoFixo.obterX(), ptoFixo.obterY(), ptoFixo.obterZ());
         matrizGlobal = matrizTmpTranslacaoInversa.transformMatrix(matrizGlobal);
         matrizObjeto = matrizObjeto.transformMatrix(matrizGlobal);
-       
+
         for (byte i = 0; i < filhos.size(); i++) {
-        ptoFixo.atribuirX(15.0);
-        ptoFixo.atribuirY(15.0);
-            filhos.get(i).escalaXYZPtoFixo(escala, ptoFixo);
+
+            filhos.get(i).escalaXYZPtoFixo(escala, bBox.obterCentro());
         }
+        bBox.atribuirBoundingBox(getBl().obterX(), getBl().obterY(), 0.0, getTr().obterX(), getTr().obterY(), 0.0);
+        bBox.escalarBox(escala);
+        bBox.desenharOpenGLBBox(gl);
+        desenha();
+
     }
 
     public void rotacaoZPtoFixo(double angulo, Ponto4D ptoFixo) {
@@ -228,11 +238,15 @@ public final class ObjetoGrafico {
         matrizTmpTranslacaoInversa.atribuirTranslacao(ptoFixo.obterX(), ptoFixo.obterY(), ptoFixo.obterZ());
         matrizGlobal = matrizTmpTranslacaoInversa.transformMatrix(matrizGlobal);
         matrizObjeto = matrizObjeto.transformMatrix(matrizGlobal);
-        ptoFixo.atribuirX(0.0);
-        ptoFixo.atribuirY(0.0);
+        //ptoFixo.atribuirX(0.0);
+        //ptoFixo.atribuirY(0.0);
         for (byte i = 0; i < filhos.size(); i++) {
             filhos.get(i).rotacaoZPtoFixo(angulo, ptoFixo);
         }
+        bBox.atribuirBoundingBox(getBl().obterX(), getBl().obterY(), 0.0, getTr().obterX(), getTr().obterY(), 0.0);
+        bBox.rotacionarBox(angulo);
+        bBox.desenharOpenGLBBox(gl);
+        desenha();
     }
 
     public void exibeMatriz() {
@@ -248,8 +262,8 @@ public final class ObjetoGrafico {
     }
 
     public Ponto4D getTl() {
-        double x = 0.0;
-        double y = 0.0;
+        double x = vertices.get(0).obterX();
+        double y = vertices.get(0).obterY();
 
         for (int i = 0; i < vertices.size(); i++) {
             if (x > vertices.get(i).obterX()) {
@@ -263,14 +277,14 @@ public final class ObjetoGrafico {
     }
 
     public Ponto4D getTr() {
-        double x = 0.0;
-        double y = 0.0;
+        double x = vertices.get(0).obterX();
+        double y = vertices.get(0).obterY();
 
         for (int i = 0; i < vertices.size(); i++) {
-            if (x > vertices.get(i).obterX()) {
+            if (x < vertices.get(i).obterX()) {
                 x = vertices.get(i).obterX();
             }
-            if (y > vertices.get(i).obterY()) {
+            if (y < vertices.get(i).obterY()) {
                 y = vertices.get(i).obterY();
             }
         }
@@ -278,8 +292,8 @@ public final class ObjetoGrafico {
     }
 
     public Ponto4D getBl() {
-        double x = 0.0;
-        double y = 0.0;
+        double x = vertices.get(0).obterX();
+        double y = vertices.get(0).obterY();
 
         for (int i = 0; i < vertices.size(); i++) {
             if (x > vertices.get(i).obterX()) {
@@ -293,8 +307,8 @@ public final class ObjetoGrafico {
     }
 
     public Ponto4D getBr() {
-        double x = 0.0;
-        double y = 0.0;
+        double x = vertices.get(0).obterX();
+        double y = vertices.get(0).obterY();
 
         for (int i = 0; i < vertices.size(); i++) {
             if (x < vertices.get(i).obterX()) {

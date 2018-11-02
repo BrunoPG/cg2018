@@ -18,9 +18,9 @@ public class Camera {
     private int zoom;
     
     public Camera(){
-    XMax=-400.0f;
-    XMin=400.0f;
-    YMax=-400.0f;
+    XMax=400.0f;
+    XMin=0.0f;
+    YMax=0.0f;
     YMin=400.0f;
     zoom=0;      
     }

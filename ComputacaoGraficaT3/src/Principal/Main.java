@@ -18,6 +18,12 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
     private GLU glu;
     private GLAutoDrawable glDrawable;
     private int focus = 0;
+    private Camera c = new Camera();
+
+    private enum Mode {
+        CREATE, ADD, PARENT, MOVE
+    };
+    private Mode mode = Mode.CREATE;
     //private ObjetoGrafico[] objetos
     //private ObjetoGrafico objeto = new ObjetoGrafico();
     //private ObjetoGrafico[] objetos = {new ObjetoGrafico(), new ObjetoGrafico()};
@@ -31,13 +37,15 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
         glu = new GLU();
         glDrawable.setGL(new DebugGL(gl));
         gl.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+        mode = Mode.CREATE;
+
     }
 
     // metodo definido na interface GLEventListener.
     // "render" feito pelo cliente OpenGL.
     public void display(GLAutoDrawable arg0) {
         gl.glClear(GL.GL_COLOR_BUFFER_BIT);
-        glu.gluOrtho2D(-30.0f, 30.0f, -30.0f, 30.0f);
+        glu.gluOrtho2D(c.getXMin(), c.getXMax(), c.getYMin(), c.getYMax());
 
         gl.glMatrixMode(GL.GL_MODELVIEW);
         gl.glLoadIdentity();
@@ -88,10 +96,10 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
                     objetos.get(focus).translacaoXYZ(-2.0, 0.0, 0.0);
                     break;
                 case KeyEvent.VK_UP:
-                    objetos.get(focus).translacaoXYZ(0.0, 2.0, 0.0);
+                    objetos.get(focus).translacaoXYZ(0.0, -2.0, 0.0);
                     break;
                 case KeyEvent.VK_DOWN:
-                    objetos.get(focus).translacaoXYZ(0.0, -2.0, 0.0);
+                    objetos.get(focus).translacaoXYZ(0.0, 2.0, 0.0);
                     break;
 
                 case KeyEvent.VK_PAGE_UP:
@@ -105,28 +113,34 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
                 //objetos.get(focus).rotacaoZ(0);
                 //break;
                 case KeyEvent.VK_1:
-                    objetos.get(focus).escalaXYZPtoFixo(0.5, new Ponto4D(-15.0, -15.0, 0.0, 0.0));
+                    objetos.get(focus).escalaXYZPtoFixo(0.5, objetos.get(focus).bBox.obterCentro().inverterSinal(objetos.get(focus).bBox.obterCentro()));
                     break;
 
                 case KeyEvent.VK_2:
-                    objetos.get(focus).escalaXYZPtoFixo(2.0, new Ponto4D(-15.0, -15.0, 0.0, 0.0));
+                    objetos.get(focus).escalaXYZPtoFixo(2.0, objetos.get(focus).bBox.obterCentro().inverterSinal(objetos.get(focus).bBox.obterCentro()));
                     break;
 
                 case KeyEvent.VK_3:
-                    objetos.get(focus).rotacaoZPtoFixo(10.0, new Ponto4D(-15.0, -15.0, 0.0, 0.0));
+                    objetos.get(focus).rotacaoZPtoFixo(10.0, objetos.get(focus).bBox.obterCentro().inverterSinal(objetos.get(focus).bBox.obterCentro()));
+                    objetos.get(focus).color();
                     break;
 
                 case KeyEvent.VK_4:
-                    objetos.add(new ObjetoGrafico());
-                    focus = objetos.size() - 1;
-                    objetos.get(focus).atribuirGL(gl);
-
+                    if (mode == Mode.ADD) {
+                        objetos.get(focus).removeVertice();
+                    }
+                    mode = Mode.CREATE;
+                    //objetos.add(new ObjetoGrafico());
+                    //focus = objetos.size() - 1;
+                    //objetos.get(focus).atribuirGL(gl);
+                    objetos.get(focus).primitiva = GL.GL_LINE_LOOP;
                     break;
                 case KeyEvent.VK_5:
-                    //if (objetos.size() > 0) {
-                    objetos.remove(focus);
-                    focus = objetos.size() - 1;
-                    //}
+                    if (objetos.size() > 0) {
+                        objetos.remove(focus);
+                        focus = objetos.size() - 1;
+                    }
+                    mode = Mode.CREATE;
                     break;
 
                 case KeyEvent.VK_6:
@@ -151,17 +165,27 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
                 case KeyEvent.VK_C:
                     objetos.get(focus).color();
                     break;
+                case KeyEvent.VK_V:
+                    if (mode == Mode.CREATE) {
+                        
+                        mode = Mode.ADD;
+                        
+                    } else if (mode == Mode.ADD) {
+                        mode = Mode.CREATE;
+                    }
+
+                    break;
                 case KeyEvent.VK_Z:
-                    objetos.get(focus).addFilho();
+                    objetos.get(focus).addFilho(focus, focus);
                     break;
                 case KeyEvent.VK_X:
                     objetos.get(focus).removeFilho();
                     break;
             }
         } else if (e.getKeyCode() == KeyEvent.VK_4) {
-            objetos.add(new ObjetoGrafico());
-            focus = objetos.size() - 1;
-            objetos.get(focus).atribuirGL(gl);
+            //objetos.add(new ObjetoGrafico());
+            //focus = objetos.size() - 1;
+            //objetos.get(focus).atribuirGL(gl);
         }
 
         glDrawable.display();
@@ -175,11 +199,13 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
         gl.glLoadIdentity();
         // System.out.println(" --- reshape ---");
         //translatar primeiro depois rotacionar
+        System.out.println("");
     }
-
+//talvez seja necessário enviar uma cópia do ultimo vertice no topo da lista para fazer o método de arraste de poligonos
     // metodo definido na interface GLEventListener.
     // "render" feito quando o modo ou dispositivo de exibicao associado foi
     // alterado.
+
     public void displayChanged(GLAutoDrawable arg0, boolean arg1, boolean arg2) {
         // System.out.println(" --- displayChanged ---");
     }
@@ -199,7 +225,37 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
     }
 
     public void mousePressed(MouseEvent e) {
-   
+        //System.out.println(e.getButton());
+        if (e.getButton() == MouseEvent.BUTTON1) {
+            switch (mode) {
+                case CREATE:
+                    mode = mode.ADD;
+                    objetos.add(new ObjetoGrafico(e.getX(), e.getY()));
+                    focus = objetos.size() - 1;
+                    objetos.get(focus).atribuirGL(gl);
+                    objetos.get(focus).primitiva = GL.GL_LINE_STRIP;
+                    objetos.get(focus).adcionaVertice((double) e.getX(), (double) e.getY());
+
+                    break;
+                case ADD:
+                    objetos.get(focus).adcionaVertice((double) e.getX(), (double) e.getY());
+                    glDrawable.display();
+                    break;
+            }
+
+        } else if (e.getButton() == MouseEvent.BUTTON3) {
+            if (objetos.size() > 0) {
+                for (int i = 0; i < objetos.size(); i++) {
+                    objetos.get(i).bBox.desenharOpenGLBBox(gl);
+                    if (objetos.get(i).bBox.contains(objetos.get(i), new Ponto4D(e.getX(), e.getY(), 0.0, 1.0))) {
+                        System.out.println("DENTRO");
+                        focus = i;
+                    } else {
+                        System.out.println("FORA");
+                    }
+                }
+            }
+        }
     }
 
     public void mouseReleased(MouseEvent e) {
@@ -207,13 +263,6 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
     }
 
     public void mouseClicked(MouseEvent e) {
-             if (objetos.size() > 0) {
-            
-            System.out.println("xy["+e.getX()+","+e.getY()+"]");
-            
-            objetos.get(focus).adcionaVertice((double) e.getX()-objetos.get(focus).vertices.get(objetos.get(focus).vertices.size()-1).obterX(), (double) objetos.get(focus).vertices.get(objetos.get(focus).vertices.size()-1).obterY()-e.getY());
-            glDrawable.display();
-        }
 
     }
 
@@ -222,6 +271,12 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
     }
 
     public void mouseMoved(MouseEvent e) {
+        //System.out.println("moveu");
+        if (mode == Mode.ADD) {
+            objetos.get(focus).vertices.get(objetos.get(focus).vertices.size() - 1).atribuirX(e.getX());
+            objetos.get(focus).vertices.get(objetos.get(focus).vertices.size() - 1).atribuirY(e.getY());
+            glDrawable.display();
+        }
     }
 
 }
