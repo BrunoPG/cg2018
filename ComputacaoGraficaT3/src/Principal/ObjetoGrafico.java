@@ -219,7 +219,7 @@ public final class ObjetoGrafico {
 
         for (byte i = 0; i < filhos.size(); i++) {
 
-            filhos.get(i).escalaXYZPtoFixo(escala, bBox.obterCentro());
+            filhos.get(i).escalaXYZPtoFixo(escala, filhos.get(i).bBox.obterCentro().inverterSinal(filhos.get(i).bBox.obterCentro()));
         }
         bBox.atribuirBoundingBox(getBl().obterX(), getBl().obterY(), 0.0, getTr().obterX(), getTr().obterY(), 0.0);
         bBox.escalarBox(escala);
@@ -241,7 +241,7 @@ public final class ObjetoGrafico {
         //ptoFixo.atribuirX(0.0);
         //ptoFixo.atribuirY(0.0);
         for (byte i = 0; i < filhos.size(); i++) {
-            filhos.get(i).rotacaoZPtoFixo(angulo, ptoFixo);
+            filhos.get(i).rotacaoZPtoFixo(angulo, filhos.get(i).bBox.obterCentro().inverterSinal(filhos.get(i).bBox.obterCentro()));
         }
         bBox.atribuirBoundingBox(getBl().obterX(), getBl().obterY(), 0.0, getTr().obterX(), getTr().obterY(), 0.0);
         bBox.rotacionarBox(angulo);
