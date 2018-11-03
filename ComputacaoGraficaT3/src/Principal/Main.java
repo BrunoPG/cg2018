@@ -214,7 +214,10 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
 
     public void mouseExited(MouseEvent e) {
     }
-
+    /**
+     * 
+     * @param e 
+     */
     public void mousePressed(MouseEvent e) {
         //System.out.println(e.getButton());
         if (e.getButton() == MouseEvent.BUTTON1) {

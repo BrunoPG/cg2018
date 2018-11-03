@@ -12,7 +12,7 @@ public final class ObjetoGrafico {
     private float b = 1.0f;
     private float tamanho = 2.0f;
     private int color, focus = 0;
-    
+
     public int primitiva = GL.GL_LINE_STRIP;
     public BoundingBox bBox;
     private Transformacao4D matrizObjeto = new Transformacao4D();
@@ -34,12 +34,22 @@ public final class ObjetoGrafico {
 
     }
 
+    /**
+     * Cria um novo objeto grafico na lista de filhos, nas posições de X e Y
+     *
+     * @param x posição de X
+     * @param y posição de Y
+     */
     public void addFilho(double x, double y) {
         filhos.add(new ObjetoGrafico(x, y));
         focus = filhos.size() - 1;
         filhos.get(focus).atribuirGL(gl);
     }
 
+    /**
+     * Remove o último filho da lista de filho, e muda o focus para o ultimo
+     * filho
+     */
     public void removeFilho() {
         if (filhos.size() > 0) {
             filhos.remove(focus);
@@ -47,6 +57,9 @@ public final class ObjetoGrafico {
         }
     }
 
+    /**
+     * muda a cor do objeto grafico e seus filhos
+     */
     public void color() {
 
         switch (color) {
@@ -113,6 +126,14 @@ public final class ObjetoGrafico {
         }
     }
 
+    /**
+     * Alterar a vertice passada por parâmetro.
+     *
+     * @param i posição da vertice
+     * @param x posição de x
+     * @param y posição de y
+     * @param z posição de z
+     */
     public void alteraVertice(Integer i, Double x, Double y, Double z) {
         this.vertices.get(i).atribuirX(x);
         this.vertices.get(i).atribuirY(y);
@@ -120,6 +141,12 @@ public final class ObjetoGrafico {
         desenha();
     }
 
+    /**
+     * cria uma nova vertice ao ponto x e y.
+     *
+     * @param x
+     * @param y
+     */
     public void adcionaVertice(Double x, Double y) {
         this.vertices.add(new Ponto4D(x, y, 0.0, 1.0));
         bBox.atualizarBBox(x, y, 0.0);
@@ -127,6 +154,11 @@ public final class ObjetoGrafico {
 
     }
 
+    /**
+     * remove a ultima vertice criada.
+     *
+     * @return retona true se existe vertice e false se não houver vertice
+     */
     public boolean removeVertice() {
         if (vertices.size() > 1) {
 
@@ -138,18 +170,36 @@ public final class ObjetoGrafico {
         }
     }
 
+    /**
+     * atribui um objeto ao obejto GL
+     *
+     * @param gl GL
+     */
     public void atribuirGL(GL gl) {
         this.gl = gl;
     }
 
+    /**
+     * tamanho do obejto grafico
+     *
+     * @return retorna o tamanho.
+     */
     public double obterTamanho() {
         return tamanho;
     }
 
+    /**
+     * Obter o tipo de ptimitiva esta sendo usada.
+     *
+     * @return retorna a primitiva usada
+     */
     public double obterPrimitava() {
         return primitiva;
     }
 
+    /**
+     * desenha o objeto grafico
+     */
     public void desenha() {
         gl.glMatrixMode(GL.GL_MODELVIEW);
         gl.glLoadIdentity();
@@ -171,6 +221,13 @@ public final class ObjetoGrafico {
         bBox.desenharOpenGLBBox(gl);
     }
 
+    /**
+     * Faz movimento de translação no obejto grafico.
+     *
+     * @param tx posição de X
+     * @param ty posição de Y
+     * @param tz posição de Z
+     */
     public void translacaoXYZ(double tx, double ty, double tz) {
         Transformacao4D matrizTranslate = new Transformacao4D();
         matrizTranslate.atribuirTranslacao(tx, ty, tz);
@@ -185,6 +242,13 @@ public final class ObjetoGrafico {
         desenha();
     }
 
+    /**
+     * atribui a escala de X e Y ao objeto grafico e seus filhos,Z sempre será
+     * 1,0.
+     *
+     * @param Sx escala de X
+     * @param Sy escala de Y
+     */
     public void escalaXYZ(double Sx, double Sy) {
         Transformacao4D matrizScale = new Transformacao4D();
         matrizScale.atribuirEscala(Sx, Sy, 1.0);
@@ -201,11 +265,21 @@ public final class ObjetoGrafico {
 //		matrizRotacaoZ.atribuirRotacaoZ(Transformacao4D.DEG_TO_RAD * angulo);
 //		matrizObjeto = matrizRotacaoZ.transformMatrix(matrizObjeto);
     //  }
+    /**
+     * atribui matriz identidade ao obejto matrizObjeto - Transformacao4D.
+     */
     public void atribuirIdentidade() {
 //		anguloGlobal = 0.0;
         matrizObjeto.atribuirIdentidade();
     }
 
+    /**
+     * atribui a escala ao objeto grafico e a todos os seus filhos, com o ponto
+     * fixo ponto4D.
+     *
+     * @param escala escala
+     * @param ptoFixo Pont4D fixo.
+     */
     public void escalaXYZPtoFixo(double escala, Ponto4D ptoFixo) {
         matrizGlobal.atribuirIdentidade();
         matrizTmpTranslacao.atribuirTranslacao(ptoFixo.obterX(), ptoFixo.obterY(), ptoFixo.obterZ());
@@ -228,6 +302,13 @@ public final class ObjetoGrafico {
 
     }
 
+    /**
+     * rotaciona o objeto grafico e todos seus filhos, pelo angulo com com o
+     * ponto fixo.
+     *
+     * @param angulo angulo.
+     * @param ptoFixo ponto fixo.
+     */
     public void rotacaoZPtoFixo(double angulo, Ponto4D ptoFixo) {
         matrizGlobal.atribuirIdentidade();
         matrizTmpTranslacao.atribuirTranslacao(ptoFixo.obterX(), ptoFixo.obterY(), ptoFixo.obterZ());
@@ -249,10 +330,16 @@ public final class ObjetoGrafico {
         desenha();
     }
 
+    /**
+     * exibi matriz do objeto Trnaformacao4D.
+     */
     public void exibeMatriz() {
         matrizObjeto.exibeMatriz();
     }
 
+    /**
+     * exibi vertices
+     */
     public void exibeVertices() {
         System.out.println("----------------------------------------------------------------------------------\n");
         for (int i = 0; i < vertices.size(); i++) {
@@ -261,6 +348,10 @@ public final class ObjetoGrafico {
 //System.out.println("anguloGlobal:" + anguloGlobal);
     }
 
+    /**
+     *
+     * @return retorna o ponto4D com o X e Y da ultima vertice e Z = 0 e W = 1
+     */
     public Ponto4D getTl() {
         double x = vertices.get(0).obterX();
         double y = vertices.get(0).obterY();
@@ -276,6 +367,10 @@ public final class ObjetoGrafico {
         return new Ponto4D(x, y, 0.0, 1.0);
     }
 
+    /**
+     *
+     * @return retorna o ponto4D com o X e Y da ultima vertice e Z = 0 e W = 1
+     */
     public Ponto4D getTr() {
         double x = vertices.get(0).obterX();
         double y = vertices.get(0).obterY();
@@ -291,6 +386,10 @@ public final class ObjetoGrafico {
         return new Ponto4D(x, y, 0.0, 1.0);
     }
 
+    /**
+     *
+     * @return retorna o ponto4D com o X e Y da ultima vertice e Z = 0 e W = 1
+     */
     public Ponto4D getBl() {
         double x = vertices.get(0).obterX();
         double y = vertices.get(0).obterY();
@@ -306,6 +405,10 @@ public final class ObjetoGrafico {
         return new Ponto4D(x, y, 0.0, 1.0);
     }
 
+    /**
+     *
+     * @return retorna o ponto4D com o X e Y da ultima vertice e Z = 0 e W = 1
+     */
     public Ponto4D getBr() {
         double x = vertices.get(0).obterX();
         double y = vertices.get(0).obterY();
