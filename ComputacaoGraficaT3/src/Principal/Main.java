@@ -26,7 +26,10 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
         CREATE, ADD, PARENT, PARENTADD, DELETE
     };
 
-    // "render" feito logo apos a inicializacao do contexto OpenGL.
+    /**
+     * "render" feito logo apos a inicializacao do contexto OpenGL.
+     * @param drawable 
+     */
     public void init(GLAutoDrawable drawable) {
         glDrawable = drawable;
         gl = drawable.getGL();
@@ -36,8 +39,11 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
         changeMode(0);
     }
 
-    // metodo definido na interface GLEventListener.
-    // "render" feito pelo cliente OpenGL.
+    /**
+     *  metodo definido na interface GLEventListener,
+     * "render" feito pelo cliente OpenGL.
+     * @param arg0 GLAutoDrawable
+     */
     public void display(GLAutoDrawable arg0) {
         gl.glClear(GL.GL_COLOR_BUFFER_BIT);
         glu.gluOrtho2D(c.getXMin(), c.getXMax(), c.getYMin(), c.getYMax());

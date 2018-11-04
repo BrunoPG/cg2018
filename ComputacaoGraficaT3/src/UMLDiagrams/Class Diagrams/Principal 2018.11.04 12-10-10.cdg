@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ClassDiagram name="Principal">
+  <ClassDiagramComponents>
+    <Class name="BoundingBox" package="Principal" visibility="public" isFinal="true" xPosition="20.0" yPosition="20.0">
+      <Fields>
+        <Field name="menorX" type="double" visibility="private"/>
+        <Field name="menorY" type="double" visibility="private"/>
+        <Field name="menorZ" type="double" visibility="private"/>
+        <Field name="maiorX" type="double" visibility="private"/>
+        <Field name="maiorY" type="double" visibility="private"/>
+        <Field name="maiorZ" type="double" visibility="private"/>
+        <Field name="centro" type="Ponto4D" visibility="private"/>
+        <Field name="matrizObjeto" type="Transformacao4D" visibility="private"/>
+        <Field name="matrizTmpTranslacao" type="Transformacao4D" visibility="private" isStatic="true"/>
+        <Field name="matrizTmpTranslacaoInversa" type="Transformacao4D" visibility="private" isStatic="true"/>
+        <Field name="matrizTmpEscala" type="Transformacao4D" visibility="private" isStatic="true"/>
+        <Field name="matrizGlobal" type="Transformacao4D" visibility="private" isStatic="true"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public"/>
+        <Constructor visibility="public">
+          <Argument type="double" name="smallerX"/>
+          <Argument type="double" name="smallerY"/>
+          <Argument type="double" name="smallerZ"/>
+          <Argument type="double" name="greaterX"/>
+          <Argument type="double" name="greaterY"/>
+          <Argument type="double" name="greaterZ"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="translatarBox" returnType="void" visibility="public">
+          <Argument type="double" name="tx"/>
+          <Argument type="double" name="ty"/>
+          <Argument type="double" name="tz"/>
+        </Method>
+        <Method name="escalarBox" returnType="void" visibility="public">
+          <Argument type="double" name="escala"/>
+        </Method>
+        <Method name="rotacionarBox" returnType="void" visibility="public">
+          <Argument type="double" name="angulo"/>
+        </Method>
+        <Method name="atribuirBoundingBox" returnType="void" visibility="public">
+          <Argument type="double" name="smallerX"/>
+          <Argument type="double" name="smallerY"/>
+          <Argument type="double" name="smallerZ"/>
+          <Argument type="double" name="greaterX"/>
+          <Argument type="double" name="greaterY"/>
+          <Argument type="double" name="greaterZ"/>
+        </Method>
+        <Method name="atualizarBBox" returnType="void" visibility="public">
+          <Argument type="Ponto4D" name="point"/>
+        </Method>
+        <Method name="atualizarBBox" returnType="void" visibility="public">
+          <Argument type="double" name="x"/>
+          <Argument type="double" name="y"/>
+          <Argument type="double" name="z"/>
+        </Method>
+        <Method name="processarCentroBBox" returnType="void" visibility="public"/>
+        <Method name="desenharOpenGLBBox" returnType="void" visibility="public">
+          <Argument type="GL" name="gl"/>
+        </Method>
+        <Method name="obterMenorX" returnType="double" visibility="public"/>
+        <Method name="obterMenorY" returnType="double" visibility="public"/>
+        <Method name="obterMenorZ" returnType="double" visibility="public"/>
+        <Method name="obterMaiorX" returnType="double" visibility="public"/>
+        <Method name="obterMaiorY" returnType="double" visibility="public"/>
+        <Method name="obterMaiorZ" returnType="double" visibility="public"/>
+        <Method name="obterCentro" returnType="Ponto4D" visibility="public"/>
+        <Method name="contains" returnType="boolean" visibility="public">
+          <Argument type="ObjetoGrafico" name="obj"/>
+          <Argument type="Ponto4D" name="posicao"/>
+        </Method>
+      </Methods>
+    </Class>
+    <Class name="Camera" package="Principal" visibility="public" xPosition="320.0" yPosition="20.0">
+      <Fields>
+        <Field name="XMax" type="float" visibility="private"/>
+        <Field name="XMin" type="float" visibility="private"/>
+        <Field name="YMax" type="float" visibility="private"/>
+        <Field name="YMin" type="float" visibility="private"/>
+        <Field name="zoom" type="int" visibility="private"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public"/>
+      </Constructors>
+      <Methods>
+        <Method name="moveCamera" returnType="void" visibility="public">
+          <Argument type="int" name="commando"/>
+        </Method>
+        <Method name="getXMax" returnType="float" visibility="public"/>
+        <Method name="getXMin" returnType="float" visibility="public"/>
+        <Method name="getYMax" returnType="float" visibility="public"/>
+        <Method name="getYMin" returnType="float" visibility="public"/>
+      </Methods>
+    </Class>
+    <Class name="Frame" package="Principal" visibility="public" xPosition="620.0" yPosition="20.0">
+      <Fields>
+        <Field name="serialVersionUID" type="long" visibility="private" isStatic="true" isFinal="true"/>
+        <Field name="renderer" type="Main" visibility="private"/>
+        <Field name="janelaLargura" type="int" visibility="private"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public"/>
+      </Constructors>
+      <Methods>
+        <Method name="main" returnType="void" visibility="public" isStatic="true">
+          <Argument type="String[]" name="args"/>
+        </Method>
+      </Methods>
+    </Class>
+    <Class name="Main" package="Principal" visibility="public" xPosition="920.0" yPosition="20.0">
+      <Fields>
+        <Field name="gl" type="GL" visibility="private"/>
+        <Field name="glu" type="GLU" visibility="private"/>
+        <Field name="glDrawable" type="GLAutoDrawable" visibility="private"/>
+        <Field name="focus" type="int" visibility="private"/>
+        <Field name="c" type="Camera" visibility="private"/>
+        <Field name="objetos" type="ArrayList&lt;ObjetoGrafico&gt;" visibility="package"/>
+        <Field name="mode" type="Mode" visibility="private"/>
+      </Fields>
+      <Constructors/>
+      <Methods>
+        <Method name="init" returnType="void" visibility="public">
+          <Argument type="GLAutoDrawable" name="drawable"/>
+        </Method>
+        <Method name="display" returnType="void" visibility="public">
+          <Argument type="GLAutoDrawable" name="arg0"/>
+        </Method>
+        <Method name="desenhaSRU" returnType="void" visibility="public"/>
+        <Method name="keyPressed" returnType="void" visibility="public">
+          <Argument type="KeyEvent" name="e"/>
+        </Method>
+        <Method name="reshape" returnType="void" visibility="public">
+          <Argument type="GLAutoDrawable" name="drawable"/>
+          <Argument type="int" name="x"/>
+          <Argument type="int" name="y"/>
+          <Argument type="int" name="width"/>
+          <Argument type="int" name="height"/>
+        </Method>
+        <Method name="displayChanged" returnType="void" visibility="public">
+          <Argument type="GLAutoDrawable" name="arg0"/>
+          <Argument type="boolean" name="arg1"/>
+          <Argument type="boolean" name="arg2"/>
+        </Method>
+        <Method name="keyReleased" returnType="void" visibility="public">
+          <Argument type="KeyEvent" name="arg0"/>
+        </Method>
+        <Method name="keyTyped" returnType="void" visibility="public">
+          <Argument type="KeyEvent" name="arg0"/>
+        </Method>
+        <Method name="mouseEntered" returnType="void" visibility="public">
+          <Argument type="MouseEvent" name="e"/>
+        </Method>
+        <Method name="mouseExited" returnType="void" visibility="public">
+          <Argument type="MouseEvent" name="e"/>
+        </Method>
+        <Method name="mousePressed" returnType="void" visibility="public">
+          <Argument type="MouseEvent" name="e"/>
+        </Method>
+        <Method name="mouseReleased" returnType="void" visibility="public">
+          <Argument type="MouseEvent" name="e"/>
+        </Method>
+        <Method name="mouseClicked" returnType="void" visibility="public">
+          <Argument type="MouseEvent" name="e"/>
+        </Method>
+        <Method name="mouseDragged" returnType="void" visibility="public">
+          <Argument type="MouseEvent" name="e"/>
+        </Method>
+        <Method name="mouseMoved" returnType="void" visibility="public">
+          <Argument type="MouseEvent" name="e"/>
+        </Method>
+        <Method name="changeMode" returnType="void" visibility="private">
+          <Argument type="int" name="m"/>
+        </Method>
+      </Methods>
+    </Class>
+    <Class name="ObjetoGrafico" package="Principal" visibility="public" isFinal="true" xPosition="1220.0" yPosition="20.0">
+      <Fields>
+        <Field name="gl" type="GL" visibility="package"/>
+        <Field name="r" type="float" visibility="private"/>
+        <Field name="g" type="float" visibility="private"/>
+        <Field name="b" type="float" visibility="private"/>
+        <Field name="tamanho" type="float" visibility="private"/>
+        <Field name="color" type="int" visibility="private"/>
+        <Field name="primitiva" type="int" visibility="public"/>
+        <Field name="bBox" type="BoundingBox" visibility="public"/>
+        <Field name="matrizObjeto" type="Transformacao4D" visibility="private"/>
+        <Field name="matrizTmpTranslacao" type="Transformacao4D" visibility="private" isStatic="true"/>
+        <Field name="matrizTmpTranslacaoInversa" type="Transformacao4D" visibility="private" isStatic="true"/>
+        <Field name="matrizTmpEscala" type="Transformacao4D" visibility="private" isStatic="true"/>
+        <Field name="matrizGlobal" type="Transformacao4D" visibility="private" isStatic="true"/>
+        <Field name="filhos" type="ArrayList&lt;ObjetoGrafico&gt;" visibility="package"/>
+        <Field name="vertices" type="ArrayList&lt;Ponto4D&gt;" visibility="package"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public">
+          <Argument type="double" name="x"/>
+          <Argument type="double" name="y"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="addFilho" returnType="void" visibility="public">
+          <Argument type="double" name="x"/>
+          <Argument type="double" name="y"/>
+        </Method>
+        <Method name="removeFilho" returnType="void" visibility="public"/>
+        <Method name="color" returnType="void" visibility="public"/>
+        <Method name="alteraVertice" returnType="void" visibility="public">
+          <Argument type="Integer" name="i"/>
+          <Argument type="Double" name="x"/>
+          <Argument type="Double" name="y"/>
+          <Argument type="Double" name="z"/>
+        </Method>
+        <Method name="adcionaVertice" returnType="void" visibility="public">
+          <Argument type="Double" name="x"/>
+          <Argument type="Double" name="y"/>
+        </Method>
+        <Method name="removeVertice" returnType="boolean" visibility="public"/>
+        <Method name="atribuirGL" returnType="void" visibility="public">
+          <Argument type="GL" name="gl"/>
+        </Method>
+        <Method name="obterTamanho" returnType="double" visibility="public"/>
+        <Method name="obterPrimitava" returnType="double" visibility="public"/>
+        <Method name="desenha" returnType="void" visibility="public"/>
+        <Method name="translacaoXYZ" returnType="void" visibility="public">
+          <Argument type="double" name="tx"/>
+          <Argument type="double" name="ty"/>
+          <Argument type="double" name="tz"/>
+        </Method>
+        <Method name="escalaXYZ" returnType="void" visibility="public">
+          <Argument type="double" name="Sx"/>
+          <Argument type="double" name="Sy"/>
+        </Method>
+        <Method name="atribuirIdentidade" returnType="void" visibility="public"/>
+        <Method name="escalaXYZPtoFixo" returnType="void" visibility="public">
+          <Argument type="double" name="escala"/>
+          <Argument type="Ponto4D" name="ptoFixo"/>
+        </Method>
+        <Method name="rotacaoZPtoFixo" returnType="void" visibility="public">
+          <Argument type="double" name="angulo"/>
+          <Argument type="Ponto4D" name="ptoFixo"/>
+        </Method>
+        <Method name="exibeMatriz" returnType="void" visibility="public"/>
+        <Method name="exibeVertices" returnType="void" visibility="public"/>
+        <Method name="getTl" returnType="Ponto4D" visibility="public"/>
+        <Method name="getTr" returnType="Ponto4D" visibility="public"/>
+        <Method name="getBl" returnType="Ponto4D" visibility="public"/>
+        <Method name="getBr" returnType="Ponto4D" visibility="public"/>
+      </Methods>
+    </Class>
+    <Class name="Ponto4D" package="Principal" visibility="public" isFinal="true" xPosition="1520.0" yPosition="20.0">
+      <Fields>
+        <Field name="x" type="double" visibility="private"/>
+        <Field name="y" type="double" visibility="private"/>
+        <Field name="z" type="double" visibility="private"/>
+        <Field name="w" type="double" visibility="private"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public"/>
+        <Constructor visibility="public">
+          <Argument type="double" name="x"/>
+          <Argument type="double" name="y"/>
+          <Argument type="double" name="z"/>
+          <Argument type="double" name="w"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="inverterSinal" returnType="Ponto4D" visibility="public">
+          <Argument type="Ponto4D" name="pto"/>
+        </Method>
+        <Method name="obterX" returnType="double" visibility="public"/>
+        <Method name="obterY" returnType="double" visibility="public"/>
+        <Method name="obterZ" returnType="double" visibility="public"/>
+        <Method name="obterW" returnType="double" visibility="public"/>
+        <Method name="atribuirX" returnType="void" visibility="public">
+          <Argument type="double" name="x"/>
+        </Method>
+        <Method name="atribuirY" returnType="void" visibility="public">
+          <Argument type="double" name="y"/>
+        </Method>
+        <Method name="atribuirZ" returnType="void" visibility="public">
+          <Argument type="double" name="z"/>
+        </Method>
+      </Methods>
+    </Class>
+    <Class name="Transformacao4D" package="Principal" visibility="public" isFinal="true" xPosition="1820.0" yPosition="20.0">
+      <Fields>
+        <Field name="DEG_TO_RAD" type="double" visibility="package" isStatic="true" isFinal="true"/>
+        <Field name="matriz" type="double[]" visibility="private"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public"/>
+      </Constructors>
+      <Methods>
+        <Method name="atribuirIdentidade" returnType="void" visibility="public"/>
+        <Method name="atribuirTranslacao" returnType="void" visibility="public">
+          <Argument type="double" name="tx"/>
+          <Argument type="double" name="ty"/>
+          <Argument type="double" name="tz"/>
+        </Method>
+        <Method name="atribuirEscala" returnType="void" visibility="public">
+          <Argument type="double" name="sX"/>
+          <Argument type="double" name="sY"/>
+          <Argument type="double" name="sZ"/>
+        </Method>
+        <Method name="atribuirRotacaoX" returnType="void" visibility="public">
+          <Argument type="double" name="radians"/>
+        </Method>
+        <Method name="atribuirRotacaoY" returnType="void" visibility="public">
+          <Argument type="double" name="radians"/>
+        </Method>
+        <Method name="atribuirRotacaoZ" returnType="void" visibility="public">
+          <Argument type="double" name="radians"/>
+        </Method>
+        <Method name="transformPoint" returnType="Ponto4D" visibility="public">
+          <Argument type="Ponto4D" name="point"/>
+        </Method>
+        <Method name="transformMatrix" returnType="Transformacao4D" visibility="public">
+          <Argument type="Transformacao4D" name="t"/>
+        </Method>
+        <Method name="GetElement" returnType="double" visibility="public">
+          <Argument type="int" name="index"/>
+        </Method>
+        <Method name="SetElement" returnType="void" visibility="public">
+          <Argument type="int" name="index"/>
+          <Argument type="double" name="value"/>
+        </Method>
+        <Method name="GetDate" returnType="double[]" visibility="public"/>
+        <Method name="SetData" returnType="void" visibility="public">
+          <Argument type="double[]" name="data"/>
+        </Method>
+        <Method name="exibeMatriz" returnType="void" visibility="public"/>
+      </Methods>
+    </Class>
+  </ClassDiagramComponents>
+  <ClassDiagramRelations>
+    <UseRelation source="Principal.BoundingBox" target="Principal.Ponto4D" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="Principal.ObjetoGrafico" target="Principal.Ponto4D" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="Principal.Transformacao4D" target="Principal.Ponto4D" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="renderer" source="Principal.Frame" target="Principal.Main" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="centro" source="Principal.BoundingBox" target="Principal.Ponto4D" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="bBox" source="Principal.ObjetoGrafico" target="Principal.BoundingBox" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="objetos" source="Principal.Main" target="Principal.ObjetoGrafico" type="Aggregation" sourceCardinality="1..1" targetCardinality="0..*" collectionType="ArrayList&lt;ObjetoGrafico&gt;"/>
+    <HasRelation name="matrizTmpEscala" source="Principal.BoundingBox" target="Principal.Transformacao4D" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="matrizGlobal" source="Principal.ObjetoGrafico" target="Principal.Transformacao4D" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="filhos" source="Principal.ObjetoGrafico" target="Principal.ObjetoGrafico" type="Aggregation" sourceCardinality="1..1" targetCardinality="0..*" collectionType="ArrayList&lt;ObjetoGrafico&gt;"/>
+    <HasRelation name="matrizObjeto" source="Principal.ObjetoGrafico" target="Principal.Transformacao4D" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="matrizTmpTranslacaoInversa" source="Principal.ObjetoGrafico" target="Principal.Transformacao4D" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="Principal.Ponto4D" target="Principal.Ponto4D" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="matrizTmpTranslacao" source="Principal.BoundingBox" target="Principal.Transformacao4D" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="matrizTmpTranslacao" source="Principal.ObjetoGrafico" target="Principal.Transformacao4D" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="vertices" source="Principal.ObjetoGrafico" target="Principal.Ponto4D" type="Aggregation" sourceCardinality="1..1" targetCardinality="0..*" collectionType="ArrayList&lt;Ponto4D&gt;"/>
+    <HasRelation name="matrizTmpTranslacaoInversa" source="Principal.BoundingBox" target="Principal.Transformacao4D" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="matrizGlobal" source="Principal.BoundingBox" target="Principal.Transformacao4D" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="Principal.Transformacao4D" target="Principal.Transformacao4D" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="matrizObjeto" source="Principal.BoundingBox" target="Principal.Transformacao4D" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="matrizTmpEscala" source="Principal.ObjetoGrafico" target="Principal.Transformacao4D" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="c" source="Principal.Main" target="Principal.Camera" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+  </ClassDiagramRelations>
+</ClassDiagram>

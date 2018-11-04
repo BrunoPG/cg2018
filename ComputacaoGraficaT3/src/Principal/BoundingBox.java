@@ -22,7 +22,7 @@ import javax.media.opengl.GL;
         this(0, 0, 0, 0, 0, 0);
     }
     /**
-     * Criar boundbox com os tamanhos maior e menor passados por parametros
+     * Criar boundbox com as variaveis X e Y maior e menor passados por parametros.
      * @param smallerX menor posição X
      * @param smallerY menor posição Y
      * @param smallerZ menor posição Z
@@ -88,7 +88,7 @@ import javax.media.opengl.GL;
 
     /**
      * Atribui os valores passados por parâmetro para para a boundbox e seta o
-     * centro da bound box
+     * centro da bound box.
      *
      * @param smallerX menor posição X
      * @param smallerY menor posição Y
